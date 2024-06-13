@@ -37,7 +37,6 @@ while True:
                 commits_len = pr.commits
                 bank_txt_read = bank_txt.read()
                 if f"{pull.number}_{commits_len}" not in bank_txt_read:
-
                     print(f"Pull Request #{pull.number}: {pull.title}, data hora: {datetime.datetime.now()}")
                     print(f"Autor: {pull.user.login}")
                     print(f"URL: {pull.html_url}")
@@ -51,8 +50,9 @@ while True:
                 pr_number = pull.number
                 pr = repo.get_pull(pr_number)
                 commits_len = pr.commits
+                revisions = pr.get_reviews()
                 bank_txt_read = bank_txt.read()
-                if f"{pull.number}_{commits_len}" not in bank_txt_read:
+                if f"{pull.number}_{commits_len}" not in bank_txt_read and revisions.totalCount > 0:
                     pr.delete_labels()
                     pr.add_to_labels('dax_prod')
                     bank_txt.write(f"{pull.number}_{commits_len}\n")
