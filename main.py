@@ -31,22 +31,27 @@ while True:
     for pull in pulls:
         if pull.user.login in list_login and 'hillvalley_homolog' in pull.title:
             with open('bank.txt', 'r+') as bank_txt:
-                bank_txt_read = bank_txt.read()
-                if f"{pull.number}_{pull.merge_commit_sha}" not in bank_txt_read:
+                pr_number = pull.number
+                pr = repo.get_pull(pr_number)
+                commits_len = pr.commits
+                pr.update()
+                last_commits_len = pr.commits
+                if len(last_commits_len) > len(commits_len):  # verificar se possui commit novo
                     print(f"Pull Request #{pull.number}: {pull.title}, data hora: {datetime.datetime.now()}")
                     print(f"Autor: {pull.user.login}")
                     print(f"URL: {pull.html_url}")
-                    pr_number = pull.number
-                    pr = repo.get_pull(pr_number)
                     pr.create_review(event="APPROVE")
                     pr.delete_labels()
                     print(f"Pull request #{pr_number} aprovado automaticamente!")
                     bank_txt.write(f"{pull.number}_{pull.merge_commit_sha}\n")
-        # mudar flag caso seja a pr seja sua para iniciar a esteira
+        # mudar flag caso a pr seja sua para iniciar a esteira
         if pull.user.login == my_login:
             pr_number = pull.number
             pr = repo.get_pull(pr_number)
-            if pr.get_reviews().totalCount > 0:
+            commits_len = pr.commits
+            pr.update()
+            last_commits_len = pr.commits
+            if len(last_commits_len) > len(commits_len):
                 pr.delete_labels()
                 pr.add_to_labels('dax_prod')
     time.sleep(5)
