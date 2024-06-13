@@ -26,7 +26,7 @@ list_login.remove(my_login)
 
 while True:
     with open('bank.txt', 'r+') as bank_txt:
-        bank_txt_read = bank_txt.read()
+
         # Listar todos os pull requests do repositório
         pulls = repo.get_pulls(state='open')  # você pode definir 'state' como 'open', 'closed' ou 'all'
         # Iterar sobre os pull requests e verificar se faz parte da lista de logins caso sim aprovar a pr
@@ -35,6 +35,7 @@ while True:
                 pr_number = pull.number
                 pr = repo.get_pull(pr_number)
                 commits_len = pr.commits
+                bank_txt_read = bank_txt.read()
                 if f"{pull.number}_{commits_len}" not in bank_txt_read:
 
                     print(f"Pull Request #{pull.number}: {pull.title}, data hora: {datetime.datetime.now()}")
@@ -42,7 +43,7 @@ while True:
                     print(f"URL: {pull.html_url}")
                     pr.create_review(event="APPROVE")
                     pr.delete_labels()
-                    bank_txt.write(f"{pull.number}_{pull.merge_commit_sha}\n")
+                    bank_txt.write(f"{pull.number}_{commits_len}\n")
                     print(f"Pull request #{pr_number} aprovado automaticamente!")
 
             # mudar flag caso a pr seja sua para iniciar a esteira
@@ -50,9 +51,10 @@ while True:
                 pr_number = pull.number
                 pr = repo.get_pull(pr_number)
                 commits_len = pr.commits
+                bank_txt_read = bank_txt.read()
                 if f"{pull.number}_{commits_len}" not in bank_txt_read:
                     pr.delete_labels()
                     pr.add_to_labels('dax_prod')
-                    bank_txt.write(f"{pull.number}_{pull.merge_commit_sha}\n")
+                    bank_txt.write(f"{pull.number}_{commits_len}\n")
                     print(f"Pull request #{pr_number} foi aprovada e esteira foi reiniciada automaticamente!")
         time.sleep(5)
