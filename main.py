@@ -16,13 +16,14 @@ repo_name = 'kiruna-khronos-ci-cd-yml'
 
 repo = g.get_repo(f"{owner}/{repo_name}")
 my_login = 'ArthurEustaquio'  # substituir pelo seu login
-list_login = ['RvaleAn',
-              'tqiabertagnolli',
-              'dilmaraferreira',
-              'pedsilva',
-              'ArthurEustaquio']
+# list_login = ['RvaleAn',
+#               'tqiabertagnolli',
+#               'dilmaraferreira',
+#               'pedsilva',
+#               'ArthurEustaquio']
+list_login = ['dilmaraferreira']
 # Remover o proprio usuario da lista
-list_login.remove(my_login)
+#list_login.remove(my_login)
 
 while True:
     with open('bank.txt', 'r+') as bank_txt:
@@ -31,7 +32,8 @@ while True:
         pulls = repo.get_pulls(state='open')  # você pode definir 'state' como 'open', 'closed' ou 'all'
         # Iterar sobre os pull requests e verificar se faz parte da lista de logins caso sim aprovar a pr
         for pull in pulls:
-            if pull.user.login in list_login and 'hillvalley_homolog' in pull.title:
+            #if pull.user.login in list_login and 'hillvalley_homolog' in pull.title:
+            if pull.user.login in list_login:
                 pr_number = pull.number
                 pr = repo.get_pull(pr_number)
                 commits_len = pr.commits
@@ -45,7 +47,7 @@ while True:
                     bank_txt.write(f"{pull.number}_{commits_len}\n")
                     print(f"Pull request #{pr_number} aprovado automaticamente!")
 
-            # mudar flag caso a pr seja sua para iniciar a esteira
+        # mudar flag caso a pr seja sua para iniciar a esteira
         #     if pull.user.login == my_login:
         #         pr_number = pull.number
         #         pr = repo.get_pull(pr_number)
