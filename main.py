@@ -21,10 +21,10 @@ my_login = 'ArthurEustaquio'  # substituir pelo seu login
 #               'dilmaraferreira',
 #               'pedsilva',
 #               'ArthurEustaquio']
-list_login = ['dilmaraferreira']
+list_login = ['dilmaraferreira','RvaleAn']
 # Remover o proprio usuario da lista
 #list_login.remove(my_login)
-
+bank_list = []
 while True:
     with open('bank.txt', 'r+') as bank_txt:
 
@@ -38,13 +38,15 @@ while True:
                 pr = repo.get_pull(pr_number)
                 commits_len = pr.commits
                 bank_txt_read = bank_txt.read()
-                if f"{pull.number}_{commits_len}" not in bank_txt_read:
+                #if f"{pull.number}_{commits_len}" not in bank_txt_read:
+                if f"{pull.number}_{commits_len}" not in bank_list:
                     print(f"Pull Request #{pull.number}: {pull.title}, data hora: {datetime.datetime.now()}")
                     print(f"Autor: {pull.user.login}")
                     print(f"URL: {pull.html_url}")
                     pr.create_review(event="APPROVE")
                     pr.delete_labels()
-                    bank_txt.write(f"{pull.number}_{commits_len}\n")
+                    #bank_txt.write(f"{pull.number}_{commits_len}\n")
+                    bank_list.append(f"{pull.number}_{commits_len}\n")
                     print(f"Pull request #{pr_number} aprovado automaticamente!")
 
         # mudar flag caso a pr seja sua para iniciar a esteira
