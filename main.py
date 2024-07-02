@@ -45,8 +45,8 @@ while True:
             pr = repo.get_pull(pr_number)
             commits_len = pr.commits
             cursor.execute(f'SELECT 1 FROM pullrequests where pr = "{pull.number}_{commits_len}"')
-            check = cursor.fetchall()
-            if check:
+            exists = cursor.fetchall()
+            if not exists:
                 print(f"Pull Request #{pull.number}: {pull.title}, data hora: {datetime.datetime.now()}")
                 print(f"Autor: {pull.user.login}")
                 print(f"URL: {pull.html_url}")
